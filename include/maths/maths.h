@@ -3,6 +3,7 @@
 #include <random>
 #include <cstdint>
 #include <numbers>
+#include <vector>
 
 namespace maths {
     class Random {
@@ -18,6 +19,15 @@ namespace maths {
         double normal(double mean, double standard_deviation) {
             std::normal_distribution<double> dist(mean, standard_deviation);
             return dist(generator_);
+        }
+
+        template <typename T>
+        T choice(const std::vector<T>& vector) {
+            if (vector.empty()) {
+                throw std::runtime_error("Cannot choose from an empty vector");
+            }
+
+            return vector[integer(0, vector.size()-1)];
         }
 
     private:

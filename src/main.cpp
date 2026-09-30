@@ -1,5 +1,5 @@
 #include "maths/maths.h"
-#include "player/character.h"
+#include "game/character.h"
 #include <string>
 #include <iostream>
 

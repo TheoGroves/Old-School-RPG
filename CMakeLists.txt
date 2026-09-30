@@ -10,7 +10,9 @@ project(${PROGRAM_NAME} LANGUAGES CXX)
 # With multiple source files we create libraries
 # Libraries are reusable parts of code e.g. a Renderer
 add_library(engine 
-    src/player/character.cpp
+    src/game/character.cpp
+    src/game/item.cpp
+    src/game/inventory.cpp
 )
 
 # Create an executable called PROGRAM_NAME from Main.cpp

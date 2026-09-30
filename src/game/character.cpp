@@ -1,5 +1,6 @@
-#include "player/character.h"
+#include "game/character.h"
 #include "maths/maths.h"
+#include "util/util.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -7,14 +8,6 @@
 
 static int generate_stat(maths::Random& rand, float mean = 10.0f, float standard_deviation = 2.5f, int min = 1, int max = 20) {
     return std::clamp(static_cast<int>(std::round(rand.normal(mean, standard_deviation))), min, max);
-}
-
-static std::string repeat(const std::string& s, int n) {
-    std::string result;
-    for (int i = 0; i < n; ++i) {
-        result += s;
-    }
-    return result;
 }
 
 void Character::generate_character() {
@@ -32,10 +25,10 @@ void Character::print() const {
     std::string title = std::format("{} - {} - Lvl.{}\n", name, archetype, level());
 
     std::cout << title;
-    std::cout << repeat("-", title.length()) << '\n';
+    std::cout << util::repeat("-", title.length()) << '\n';
     std::cout << std::format("STR {:>2}  DEX {:>2}  VIT {:>2}\n", strength, dexterity, vitality);
     std::cout << std::format("INT {:>2}  WIS {:>2}  LCK {:>2}\n", intelligence, wisdom, luck);
-    std::cout << repeat("-", title.length()) << '\n';
+    std::cout << util::repeat("-", title.length()) << '\n';
 
 }
 

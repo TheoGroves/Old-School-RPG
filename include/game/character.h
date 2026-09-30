@@ -1,10 +1,11 @@
 #pragma once
 #include "maths/maths.h"
+#include "game/inventory.h"
 #include <string>
 
 class Character {
 public:
-    Character(maths::Random rand, std::string name)
+    Character(maths::Random& rand, std::string name)
         : rand(rand), name(name) {}
 
     std::string name;
@@ -23,6 +24,10 @@ public:
     int health;
     
     int armour = 0; // TODO: replace with proper equipment system
+
+    int silver = 500; // Starting silver
+
+    Inventory inventory;
     
     int max_health() const;
     int base_damage() const;
@@ -36,5 +41,5 @@ public:
     void generate_character();
     void print() const;
 private:
-    maths::Random rand;
+    maths::Random& rand;
 };
