@@ -29,6 +29,9 @@ public:
 
     Inventory inventory;
     
+    void generate_character();
+    void print() const;
+
     int max_health() const;
     int base_damage() const;
     int defence() const;
@@ -37,9 +40,6 @@ public:
     float dodge_chance() const;
     float crit_chance() const;
     float crit_multiplier() const;
-
-    void generate_character();
-    void print() const;
 private:
     maths::Random& rand;
 };

@@ -6,8 +6,14 @@
 #include <iostream>
 #include <format>
 
+constexpr int separator_size = 23;
+
 static int generate_stat(maths::Random& rand, float mean = 10.0f, float standard_deviation = 2.5f, int min = 1, int max = 20) {
     return std::clamp(static_cast<int>(std::round(rand.normal(mean, standard_deviation))), min, max);
+}
+
+int Character::level() const {
+    return static_cast<int>(std::floor(3.4f * std::sqrtf(xp / 100.0f * 0.3f + maths::epsilon) + 1.0f));
 }
 
 void Character::generate_character() {
@@ -22,18 +28,24 @@ void Character::generate_character() {
 }
 
 void Character::print() const {
-    std::string title = std::format("{} - {} - Lvl.{}\n", name, archetype, level());
-
-    std::cout << title;
-    std::cout << util::repeat("-", title.length()) << '\n';
+    std::cout << util::separator(separator_size) << '\n';
+    std::cout << std::format("{} - {} - Lvl.{} ({} xp)\n", name, archetype, level(), xp);
+    std::cout << util::separator(separator_size) << '\n';
     std::cout << std::format("STR {:>2}  DEX {:>2}  VIT {:>2}\n", strength, dexterity, vitality);
     std::cout << std::format("INT {:>2}  WIS {:>2}  LCK {:>2}\n", intelligence, wisdom, luck);
-    std::cout << util::repeat("-", title.length()) << '\n';
+    std::cout << util::separator(separator_size) << "\n\n";
 
-}
+    std::cout << util::header("INVENTORY", separator_size) << '\n';
+    std::vector<Item*> all_items = inventory.get_all();
 
-int Character::level() const {
-    return static_cast<int>(std::floor(3.4f * std::sqrtf(xp / 100.0f * 0.3f + maths::epsilon) + 1.0f));
+    for (size_t i = 0; i < all_items.size(); ++i) {
+        std::cout << std::format("{:>2}. {} [{}]\n", i+1, all_items[i]->name, all_items[i]->quality);
+    }
+    if (all_items.empty()) {
+        std::cout << "Empty\n";
+    }
+
+    std::cout << util::separator(separator_size) << '\n';
 }
 
 int Character::max_health() const {

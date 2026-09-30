@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <numbers>
 #include <vector>
+#include <stdexcept>
 
 namespace maths {
     class Random {
