@@ -29,7 +29,7 @@ void Character::generate_character() {
 }
 
 void Character::print() const {
-    std::string title = std::format("{} - {} - Lvl.{}\n", name, archetype, level);
+    std::string title = std::format("{} - {} - Lvl.{}\n", name, archetype, level());
 
     std::cout << title;
     std::cout << repeat("-", title.length()) << '\n';
@@ -39,12 +39,16 @@ void Character::print() const {
 
 }
 
+int Character::level() const {
+    return static_cast<int>(std::floor(3.4f * std::sqrtf(xp / 100.0f * 0.3f + maths::epsilon) + 1.0f));
+}
+
 int Character::max_health() const {
-    return static_cast<int>(50 + 8 * vitality + 12 * std::pow(level, 1.15));
+    return static_cast<int>(50 + 8 * vitality + 12 * std::pow(level(), 1.15));
 }
 
 int Character::base_damage() const {
-    return static_cast<int>(2 * std::pow(strength, 1.15) * std::pow(level, 0.35));
+    return static_cast<int>(2 * std::pow(strength, 1.15) * std::pow(level(), 0.35));
 }
 
 int Character::defence() const {

@@ -10,15 +10,15 @@ public:
     std::string name;
     std::string archetype; // Derived from stats
 
-    int level = 1;    // Controls power of character
-    int xp = 0;       // Controls level
+    int level() const; // Controls power of character (derived from xp)
+    int xp = 0;        // Controls level
 
-    int strength;     // Controls damage
-    int dexterity;    // Controls accuracy and evasion
-    int vitality;     // Controls health and defence
-    int intelligence; // Controls spell power
-    int wisdom;       // Controls mana
-    int luck;         // Controls critical hits, loot and events
+    int strength;      // Controls damage
+    int dexterity;     // Controls accuracy and evasion
+    int vitality;      // Controls health and defence
+    int intelligence;  // Controls spell power
+    int wisdom;        // Controls mana
+    int luck;          // Controls critical hits, loot and events
 
     int health;
     

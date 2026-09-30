@@ -26,5 +26,5 @@ namespace maths {
 
     inline constexpr double e = std::numbers::e;
 
-
+    inline constexpr float epsilon = 0.00001f;
 }
