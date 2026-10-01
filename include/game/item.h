@@ -46,3 +46,12 @@ private:
     int base_damage;
     float crit;
 };
+
+class Armour: public Item {
+public:
+    Armour(maths::Random& rand, std::string name, int price, int defence)
+        : Item(rand, name, price),
+          defence(defence) {}
+
+    int defence;
+};
