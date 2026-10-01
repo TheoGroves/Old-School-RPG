@@ -8,6 +8,29 @@ void Weapon::inspect() {
     std::string title = std::format("{} - {}\n", name, quality);
     std::cout << title;
     std::cout << util::repeat("-", title.length()) << '\n';
-    std::cout << std::format("DMG {:>3}  CRT {:>3}", damage, crit);
+    std::cout << std::format("DMG {:>3}  CRT {:>3}", base_damage, crit);
     std::cout << util::repeat("-", title.length()) << '\n';
+}
+
+HitData Weapon::attack(Character& user, Character* target) {
+    HitData data{false, 0.0f, target, false};
+    
+    if (!target) {
+        return data;
+    }
+    
+    if (rand.uniform() < target->hit_chance(user)) {
+        float crit = 1.0f;
+        if (rand.uniform() < user.crit_chance()) {
+            crit = user.crit_multiplier();
+            data.crit = true;
+        }
+        
+        float damage = (user.base_damage() + base_damage) * crit * target->damage_multiplier();
+        target->deal_damage(damage);
+        data.damage = damage;
+        data.hit = true;
+    }
+
+    return data;
 }

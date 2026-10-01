@@ -25,17 +25,24 @@ protected:
     maths::Random& rand;
 };
 
+struct HitData {
+    bool hit;
+    float damage;
+    Character* target;
+    bool crit;
+};
+
 class Weapon: public Item {
 public:
     Weapon(maths::Random& rand, std::string name, int price, int damage, float crit)
         : Item(rand, name, price),
-          damage(damage),
+          base_damage(damage),
           crit(crit) {}
 
     void inspect() override;
-    void attack(Character& target);
+    HitData attack(Character& user, Character* target);
 
 private:
-    int damage;
+    int base_damage;
     float crit;
 };

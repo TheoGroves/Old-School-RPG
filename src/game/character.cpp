@@ -48,6 +48,10 @@ void Character::print() const {
     std::cout << util::separator(separator_size) << '\n';
 }
 
+void Character::deal_damage(float damage) {
+    health -= damage;
+}
+
 int Character::max_health() const {
     return static_cast<int>(50 + 8 * vitality + 12 * std::pow(level(), 1.15));
 }

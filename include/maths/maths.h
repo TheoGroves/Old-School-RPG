@@ -31,6 +31,11 @@ namespace maths {
             return vector[integer(0, vector.size()-1)];
         }
 
+        float uniform(float min=0.0f, float max=1.0f) {
+            std::uniform_real_distribution<float> dist(min, max);
+            return dist(generator_);
+        }
+
     private:
         std::mt19937 generator_;
     };

@@ -32,6 +32,8 @@ public:
     void generate_character();
     void print() const;
 
+    void deal_damage(float damage);
+
     int max_health() const;
     int base_damage() const;
     int defence() const;
