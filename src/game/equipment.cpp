@@ -38,7 +38,7 @@ void Equipment::print() const {
         if (item) {
             if (auto* armour = util::as<Armour>(item)) {
                 std::cout << std::format(
-                    "{:<5} {:<10} [{:<9}] DEF {}\n",
+                    "{:<5} {:<10} [{:<9}]  DEF {}\n",
                     slot, armour->name, armour->quality, armour->defence
                 );
             } else {
@@ -49,7 +49,7 @@ void Equipment::print() const {
             }
 
         } else {
-            std::cout << std::format("{:<5} None DEF 0\n", slot);
+            std::cout << std::format("{:<5} None  DEF 0\n", slot);
         }
     };
 

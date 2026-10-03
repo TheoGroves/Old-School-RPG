@@ -2,6 +2,12 @@
 #include <string>
 #include <cmath>
 #include <memory>
+#include <concepts>
+#include <format>
+#include <iostream>
+#include <limits>
+#include <string_view>
+#include <sstream>
 
 namespace util {
     constexpr int separator_size = 23;
@@ -34,6 +40,47 @@ namespace util {
         float separator_width = (width - padded.length()) / 2.0f;
 
         return separator(std::ceil(separator_width)) + padded + separator(std::floor(separator_width));
+    }
+
+    template <typename T>
+    inline T prompt(std::string_view prompt) {
+        T choice;
+        while (true) {
+            std::cout << std::format("{}\n> ", prompt);
+
+            std::string line;
+            std::getline(std::cin, line);
+
+            std::istringstream iss(line);
+
+            if (iss >> choice && iss.eof()) {
+                return choice;
+            }
+        }
+    }
+
+    template <std::integral T>
+    inline T prompt(std::string_view prompt, T min, T max) {
+        T choice;
+        while (true) {
+            std::cout << std::format("{} ({}-{})\n> ", prompt, min, max);
+
+            std::string line;
+            std::getline(std::cin, line);
+
+            std::istringstream iss(line);
+
+            if (iss >> choice && iss.eof() && choice >= min && choice <= max) {
+                return choice;
+            }
+        }
+    }
+
+    template <typename T>
+    inline void display_vector(const std::vector<T>& v) {
+        for (int i = 0; i < v.size(); ++i) {
+            std::cout << std::format("{}. {}\n", i+1, v[i]);
+        }
     }
 
     template <typename T, typename U>

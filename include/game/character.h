@@ -18,6 +18,24 @@ enum class Archetype {
     Survivor
 };
 
+struct Stats {
+    int strength;      // Controls damage
+    int dexterity;     // Controls accuracy and evasion
+    int vitality;      // Controls health and defence
+    int intelligence;  // Controls spell power
+    int wisdom;        // Controls mana
+    int luck;          // Controls critical hits, loot and events
+};
+
+enum class Specialization {
+    Strength,
+    Dexterity,
+    Vitality,
+    Intelligence,
+    Wisdom,
+    Luck
+};
+
 struct ArchetypeResult {
     Archetype archetype;
     float affinity;
@@ -42,26 +60,24 @@ constexpr std::string_view to_string(Archetype archetype) {
 
 class Character {
 public:
-    Character(maths::Random& rand, std::string name)
-        : rand(rand), name(name) {}
+    Character(maths::Random& rand, std::string name, bool player_controlled=false)
+        : rand(rand), name(name), player_controlled(player_controlled) {}
+
+    bool player_controlled; // Does the player control this character currently? Allows certain functions to pass choices to the player.
 
     std::string name;
 
-    int level() const; // Controls power of character (derived from xp)
-    int xp = 0;        // Controls level
+    int level() const;             // Controls power of character (derived from xp)
+    int xp = 0;                    // Controls level
+    Specialization specialization; // Late-game specialization allows one stat to go over level 20 cap
 
-    int strength;      // Controls damage
-    int dexterity;     // Controls accuracy and evasion
-    int vitality;      // Controls health and defence
-    int intelligence;  // Controls spell power
-    int wisdom;        // Controls mana
-    int luck;          // Controls critical hits, loot and events
+    Stats stats;
 
     int health;
     
     int armour = 0;
 
-    int silver = 500; // Starting silver
+    int silver = 500;  // Starting silver
 
     Inventory inventory;
     Equipment equipment;
@@ -70,6 +86,10 @@ public:
     void print() const;
 
     void deal_damage(float damage);
+
+    void give_xp(float amount);
+    void handle_level_up(int level);
+    void apply_upgrade(std::string stat);
 
     int max_health() const;
     int base_damage() const;

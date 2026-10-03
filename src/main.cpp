@@ -10,16 +10,15 @@ int main() {
 
     maths::Random rand(seed);
 
-    std::string name;
+    std::string name = "Test";
 
     //std::cout << "Enter character name: ";
     //std::cin >> name;
 
-    for (int i = 0; i < 5; i++) {
-        Character player(rand, std::to_string(i));
-        player.generate_character();
-        player.print();
-    }
+    Character player(rand, name, true);
+    player.generate_character();
+    player.give_xp(10000);
+    player.print();
 
     return 0;
 }

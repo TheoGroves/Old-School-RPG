@@ -23,12 +23,32 @@ namespace maths {
         }
 
         template <typename T>
-        T choice(const std::vector<T>& vector) {
-            if (vector.empty()) {
+        T choice(const std::vector<T>& v) {
+            if (v.empty()) {
                 throw std::runtime_error("Cannot choose from an empty vector");
             }
 
-            return vector[integer(0, vector.size()-1)];
+            return v[integer(0, v.size()-1)];
+        }
+
+        template <typename T>
+        std::vector<T> choice(std::vector<T> v, int n) {
+            if (v.size() < n) {
+                throw std::runtime_error("Cannot choose from a vector that is smaller than the chosen number.");
+            }
+
+            std::vector<T> result;
+            result.reserve(n);
+
+            for (int i = 0; i < n; i++) {
+                int index = integer(0, v.size()-1);
+                
+                result.push_back(v[index]);
+                v[index] = std::move(v.back());
+                v.pop_back();
+            }
+
+            return result;
         }
 
         float uniform(float min=0.0f, float max=1.0f) {
