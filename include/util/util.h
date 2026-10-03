@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
 #include <cmath>
+#include <memory>
 
 namespace util {
+    constexpr int separator_size = 23;
+
     inline std::string repeat(const std::string& s, int n) {
         if (n <= 0) return "";
 
@@ -27,9 +30,14 @@ namespace util {
             return title;
         }
         
-        // Calculate width of the two seperators. Store as float to handle odd widths.
-        float seperator_width = (width - padded.length()) / 2.0f;
+        // Calculate width of the two separators. Store as float to handle odd widths.
+        float separator_width = (width - padded.length()) / 2.0f;
 
-        return separator(std::ceil(seperator_width)) + padded + separator(std::floor(seperator_width));
+        return separator(std::ceil(separator_width)) + padded + separator(std::floor(separator_width));
+    }
+
+    template <typename T, typename U>
+    T* as(const std::unique_ptr<U>& ptr) {
+        return dynamic_cast<T*>(ptr.get());
     }
 }

@@ -13,6 +13,7 @@ add_library(engine
     src/game/character.cpp
     src/game/item.cpp
     src/game/inventory.cpp
+    src/game/equipment.cpp
 )
 
 # Create an executable called PROGRAM_NAME from Main.cpp
