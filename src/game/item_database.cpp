@@ -10,7 +10,7 @@ Weapon ItemDatabase::wood_short_sword() { return Weapon(rand, "Wooden Short Swor
 Weapon ItemDatabase::iron_short_sword() { return Weapon(rand, "Iron Short Sword", "A perfect beginner's sword. Great at just about anything you want from a short sword.", 75, false, 10, 1.5, WeaponType::short_blade); }
 Weapon ItemDatabase::steel_short_sword() { return Weapon(rand, "Steel Short Sword", "Iron but better.", 90, false, 13, 1.5, WeaponType::short_blade); }
 Weapon ItemDatabase::gold_short_sword() { return Weapon(rand, "Gold Short Sword", "Because I want to spend all my silver.", 250, true, 14, 1.5, WeaponType::short_blade); }
-Weapon ItemDatabase::mythril_short_sword() { return Weapon(rand, "Mythril Short Sword", "Light, sharp and pulsing with magical energy.", 500, true, 15, 1.5, WeaponType::short_blade); }
+Weapon ItemDatabase::mythril_short_sword() { return Weapon(rand, "Mythril Short Sword", "Light, sharp and pulsing with magical energy.", 500, true, 18, 1.5, WeaponType::short_blade); }
 Weapon ItemDatabase::adamantite_short_sword() { return Weapon(rand, "Adamantite Short Sword", "Apparently, size really doesn't matter.", 750, false, 22, 1.7, WeaponType::short_blade); }
 
 Weapon ItemDatabase::wood_long_sword() { return Weapon(rand, "Wooden Long Sword", "Essentially a big long stick.", 70, false, 10, 1.6, WeaponType::long_blade); }
@@ -22,7 +22,7 @@ Weapon ItemDatabase::adamantite_long_sword() { return Weapon(rand, "Adamantite L
 
 Weapon ItemDatabase::wood_great_sword() { return Weapon(rand, "Wooden Great Sword", "Why did you buy this?", 120, false, 12, 1.7, WeaponType::long_blade); }
 Weapon ItemDatabase::iron_great_sword() { return Weapon(rand, "Iron Great Sword", "When nothing is ever big enough.", 250, false, 20, 1.7, WeaponType::long_blade); }
-Weapon ItemDatabase::steel_great_sword() { return Weapon(rand, "Steel Great Sword", "Bigger and better.", 300, false, 25, 1.6, WeaponType::long_blade); }
+Weapon ItemDatabase::steel_great_sword() { return Weapon(rand, "Steel Great Sword", "Bigger and better.", 300, false, 25, 1.7, WeaponType::long_blade); }
 Weapon ItemDatabase::gold_great_sword() { return Weapon(rand, "Gold Great Sword", "The blacksmith offered to take you back to his place to try out his 'sword' after purchasing this.", 1000, true, 23, 1.7, WeaponType::long_blade); }
 Weapon ItemDatabase::mythril_great_sword() { return Weapon(rand, "Mythril Great Sword", "Surprisingly light for a sword of its size.", 2500, true, 35, 1.7, WeaponType::long_blade); }
 Weapon ItemDatabase::adamantite_great_sword() { return Weapon(rand, "Adamantite Great Sword", "If it won't go down with this, get the hell outta there.", 3500, false, 45, 2.1, WeaponType::long_blade); }
