@@ -8,16 +8,18 @@ class Character;
 
 class Item {
 public:
-    Item(maths::Random& rand, std::string name, int price)
-        : rand(rand), name(name), price(price) 
+    Item(maths::Random& rand, std::string name, std::string description, int price, bool enchantable)
+        : rand(rand), name(name), description(description), price(price), enchantable(enchantable) 
     {
         std::vector<std::string> qualities = {"Awful", "Poor", "Normal", "Good", "Excellent", "Masterwork", "Legendary"};
         quality = rand.choice(qualities);
     }
 
     std::string name;
+    std::string description;
     int price;
     std::string quality;
+    bool enchantable;
 
     virtual ~Item() = default;
     virtual void inspect() = 0;
@@ -32,26 +34,50 @@ struct HitData {
     bool crit;
 };
 
+enum class WeaponType {
+    short_blunt,
+    long_blunt,
+    short_blade,
+    long_blade,
+    axe,
+    spear,
+    archery,
+    throwable
+};
+
 class Weapon: public Item {
 public:
-    Weapon(maths::Random& rand, std::string name, int price, int damage, float crit)
-        : Item(rand, name, price),
-          base_damage(damage),
-          crit(crit) {}
+    Weapon(maths::Random& rand, std::string name, std::string description, int price, bool enchantable, int damage, float crit, WeaponType weapon_type)
+        : Item(rand, name, description, price, enchantable),
+            base_damage(damage),
+            crit(crit),
+            weapon_type(weapon_type)
+        {}
 
     void inspect() override;
     HitData attack(Character& user, Character* target);
 
-private:
     int base_damage;
     float crit;
+    WeaponType weapon_type;
+};
+
+enum class Slot {
+    head,
+    body,
+    legs,
+    feet
 };
 
 class Armour: public Item {
 public:
-    Armour(maths::Random& rand, std::string name, int price, int defence)
-        : Item(rand, name, price),
-          defence(defence) {}
+    Armour(maths::Random& rand, std::string name, std::string description, int price, bool enchantable, int defence, Slot slot)
+        : Item(rand, name, description, price, enchantable),
+            defence(defence), slot(slot)
+        {}
+
+    void inspect() override;
 
     int defence;
+    Slot slot;
 };

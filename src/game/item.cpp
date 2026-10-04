@@ -34,3 +34,11 @@ HitData Weapon::attack(Character& user, Character* target) {
 
     return data;
 }
+
+void Armour::inspect() {
+    std::string title = std::format("{} - {}\n", name, quality);
+    std::cout << title;
+    std::cout << util::repeat("-", title.length()) << '\n';
+    std::cout << std::format("DEF {:>3}", defence);
+    std::cout << util::repeat("-", title.length()) << '\n';
+}
