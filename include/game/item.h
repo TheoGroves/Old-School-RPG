@@ -23,6 +23,8 @@ public:
 
     virtual ~Item() = default;
     virtual void inspect() = 0;
+
+    virtual std::string get_display_name() const;
 protected:
     maths::Random& rand;
 };

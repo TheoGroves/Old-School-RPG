@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include <limits>
+#include <string_view>
 
 static int generate_stat(maths::Random& rand, float mean = 10.0f, float standard_deviation = 2.5f, int min = 1, int max = 20) {
     return std::clamp(static_cast<int>(std::round(rand.normal(mean, standard_deviation))), min, max);
@@ -154,6 +155,66 @@ float Character::crit_multiplier() const {
     return 1.5f + 0.02f * stats.luck;
 }
 
+std::unique_ptr<Item> Character::get_item(std::string_view name) {
+    return inventory.get_first(name);
+}
+
+std::unique_ptr<Item> Character::choose_item() {
+    std::vector<Item*> items = inventory.get_all_unique();
+
+    util::display_vector(items);
+    int choice = util::prompt("Which item do you want to choose", 1, static_cast<int>(items.size()));
+
+    return inventory.get_by_ptr(items[choice-1]);
+}
+
+void Character::give_item(std::unique_ptr<Item>& item) {
+    inventory.add_item(item);
+}
+
+void Character::use_item(std::unique_ptr<Item>& item) {
+    std::string prompt = std::format("What will you do with the {}> ", item->name);
+
+    if (auto* weapon = util::as<Weapon>(item)) {
+        if (player_controlled) {
+            std::vector<std::string> choices = {"Inspect", "Equip", "Attack"};
+            util::display_vector(choices);
+            int choice = util::prompt(prompt, 1, static_cast<int>(choices.size()));
+            
+            if (choice == 1) {
+                weapon->inspect();
+            } 
+            else if (choice == 2) {
+                equipment.equip(ItemSlot::hands, item);
+            }
+            else if (choice == 3) {
+                std::vector<std::string> targets = {"Noone"};
+                util::display_vector(targets);
+                int choice = util::prompt("Attack who", 1, static_cast<int>(choices.size()));
+
+                // Hard code attack at nobody. TODO: find nearby Characters.
+                weapon->attack(*this, nullptr);
+            }
+        }
+    }
+    else if (auto* armour = util::as<Armour>(item)) {
+        if (player_controlled) {
+            std::vector<std::string> choices = {"Inspect", "Equip"};
+            util::display_vector(choices);
+            int choice = util::prompt(prompt, 1, static_cast<int>(choices.size()));
+
+            if (choice == 1) {
+                armour->inspect();
+            } 
+            else if (choice == 2) {
+                equipment.equip(static_cast<ItemSlot>(armour->slot), item);
+            }
+        }
+    } else {
+        std::cerr << std::format("Error: Unhandled item {} selected.\n", item->get_display_name());
+    }
+}
+
 ArchetypeResult Character::archetype() const{
     Archetype current_archetype = Archetype::Unformed;
 
@@ -177,7 +238,7 @@ ArchetypeResult Character::archetype() const{
 
     auto it = std::prev(affinities.end());
     float affinity = 0.0f;
-    if (it->first > 0.5) {
+    if (it->first > 0.1) {
         affinity = it->first;
         current_archetype = it->second;
     }

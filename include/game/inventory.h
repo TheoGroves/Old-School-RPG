@@ -2,10 +2,11 @@
 #include "item.h"
 #include <vector>
 #include <memory>
+#include <string_view>
 
 class Inventory {
 public:
-    void add_item(std::unique_ptr<Item> item);
+    void add_item(std::unique_ptr<Item>& item);
     bool remove_item(Item* item_ptr);
     std::unique_ptr<Item> pop_item(Item* item_ptr);
 
@@ -24,6 +25,10 @@ public:
     }
 
     std::vector<Item*> get_all() const;
+    std::vector<Item*> get_all_unique() const;
+
+    std::unique_ptr<Item> get_first(std::string_view name);
+    std::unique_ptr<Item> get_by_ptr(Item* item);
 
 private:
     std::vector<std::unique_ptr<Item>> items;

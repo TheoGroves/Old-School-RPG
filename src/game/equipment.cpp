@@ -4,7 +4,7 @@
 #include <memory>
 #include <string_view>
 
-void Equipment::equip(ItemSlot slot, std::unique_ptr<Item> item) {
+void Equipment::equip(ItemSlot slot, std::unique_ptr<Item>& item) {
     switch (slot) {
         case ItemSlot::head:
             head = move_item<Armour>(std::move(item));

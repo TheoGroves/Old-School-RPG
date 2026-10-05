@@ -29,7 +29,7 @@ enum class ItemSlot {
 
 class Equipment {
 public:
-    void equip(ItemSlot slot, std::unique_ptr<Item> item);
+    void equip(ItemSlot slot, std::unique_ptr<Item>& item);
     void print() const;
 
     int defence() const;

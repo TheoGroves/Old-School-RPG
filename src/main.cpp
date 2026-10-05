@@ -1,5 +1,6 @@
 #include "maths/maths.h"
 #include "game/character.h"
+#include "game/item_database.h"
 #include <string>
 #include <iostream>
 #include <chrono>
@@ -12,12 +13,14 @@ int main() {
 
     std::string name = "Test";
 
+    ItemDatabase idb = ItemDatabase(rand);
+
     //std::cout << "Enter character name: ";
     //std::cin >> name;
 
     Character player(rand, name, true);
     player.generate_character();
-    player.give_xp(10000);
+    player.give_xp(500);
     player.print();
 
     return 0;

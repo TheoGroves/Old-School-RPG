@@ -77,9 +77,34 @@ namespace util {
     }
 
     template <typename T>
+    concept formattable = requires(T a) {
+        std::format("{}", a);
+    };
+
+    template <typename T>
     inline void display_vector(const std::vector<T>& v) {
-        for (int i = 0; i < v.size(); ++i) {
+        for (size_t i = 0; i < v.size(); ++i) {
             std::cout << std::format("{}. {}\n", i+1, v[i]);
+        }
+    }
+
+    template <typename T>
+    inline void display_vector(const std::vector<T>& v)
+        requires (requires(T ptr) { *ptr; }) // Check if T can be dereferenced
+    {
+        for (size_t i = 0; i < v.size(); ++i) {
+            if (v[i]) {
+                if constexpr (requires { v[i]->get_display_name(); }) {
+                    std::cout << std::format("{}. {}\n", i+1, v[i]->get_display_name());
+                }
+                else if constexpr (requires { std::format("{}", *v[i]); }) {
+                    std::cout << std::format("{}. {}", i+1, *v[i]);
+                } else {
+                    std::cout << std::format("{}. [Unformattable Ptr]\n", i+1);
+                }
+            } else {
+                std::cout << std::format("{}. [Null]\n", i+1);
+            }
         }
     }
 

@@ -100,6 +100,12 @@ public:
     float crit_chance() const;
     float crit_multiplier() const;
 
+    std::unique_ptr<Item> get_item(std::string_view name);
+    std::unique_ptr<Item> choose_item();
+
+    void give_item(std::unique_ptr<Item>& item);
+    void use_item(std::unique_ptr<Item>& item);
+
     ArchetypeResult archetype() const;
 private:
     maths::Random& rand;

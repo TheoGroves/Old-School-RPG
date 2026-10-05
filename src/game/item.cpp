@@ -4,8 +4,12 @@
 #include <iostream>
 #include <format>
 
+std::string Item::get_display_name() const { 
+    return std::format("{} ({}){}", name, quality, enchantable ? " [ENCHANTABLE]" : ""); 
+}
+
 void Weapon::inspect() {
-    std::string title = std::format("{} - {}\n", name, quality);
+    std::string title = get_display_name();
     std::cout << title;
     std::cout << util::repeat("-", title.length()) << '\n';
     std::cout << std::format("DMG {:>3}  CRT {:>3}", base_damage, crit);
@@ -36,7 +40,7 @@ HitData Weapon::attack(Character& user, Character* target) {
 }
 
 void Armour::inspect() {
-    std::string title = std::format("{} - {}\n", name, quality);
+    std::string title = get_display_name();
     std::cout << title;
     std::cout << util::repeat("-", title.length()) << '\n';
     std::cout << std::format("DEF {:>3}", defence);
