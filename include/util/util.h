@@ -10,7 +10,7 @@
 #include <sstream>
 
 namespace util {
-    constexpr int separator_size = 23;
+    constexpr int separator_size = 50;
 
     inline std::string repeat(const std::string& s, int n) {
         if (n <= 0) return "";

@@ -5,6 +5,7 @@
 #include <numbers>
 #include <vector>
 #include <stdexcept>
+#include <concepts>
 
 namespace maths {
     class Random {
@@ -25,14 +26,29 @@ namespace maths {
         template <typename T>
         T choice(const std::vector<T>& v) {
             if (v.empty()) {
-                throw std::runtime_error("Cannot choose from an empty vector");
+                throw std::runtime_error("Cannot choose from an empty vector.");
             }
 
             return v[integer(0, v.size()-1)];
         }
 
+        template <typename T, std::floating_point U>
+        const T& choice(const std::vector<T>& v, const std::vector<U>& weights) {
+            if (v.size() != weights.size()) {
+                throw std::runtime_error("Cannot choose from vector as it does not have the same number of elements as weights.");
+            }
+
+            if (v.empty()) {
+                throw std::runtime_error("Cannot choose from an empty vector.");
+            }
+
+            std::discrete_distribution<> dist(weights.begin(), weights.end());
+
+            return v[dist(generator_)];
+        }
+
         template <typename T>
-        std::vector<T> choice(std::vector<T> v, int n) {
+        std::vector<T> choice(std::vector<T> v, size_t n) {
             if (v.size() < n) {
                 throw std::runtime_error("Cannot choose from a vector that is smaller than the chosen number.");
             }
@@ -44,7 +60,7 @@ namespace maths {
                 int index = integer(0, v.size()-1);
                 
                 result.push_back(v[index]);
-                v[index] = std::move(v.back());
+                std::swap(v[index], v.back());
                 v.pop_back();
             }
 
