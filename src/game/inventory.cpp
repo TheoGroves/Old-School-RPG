@@ -3,7 +3,7 @@
 #include <memory>
 #include <unordered_set>
 
-void Inventory::add_item(std::unique_ptr<Item>& item) {
+void Inventory::add_item(std::unique_ptr<Item> item) {
     if (item) {
         items.push_back(std::move(item));
     }

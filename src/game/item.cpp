@@ -10,9 +10,9 @@ std::string Item::get_display_name() const {
 
 void Weapon::inspect() {
     std::string title = get_display_name();
-    std::cout << title;
+    std::cout << title << '\n';
     std::cout << util::repeat("-", title.length()) << '\n';
-    std::cout << std::format("DMG {:>3}  CRT {:>3}", base_damage, crit);
+    std::cout << std::format("DMG {:>3}  CRT {:>3}", base_damage, crit) << '\n';
     std::cout << util::repeat("-", title.length()) << '\n';
 }
 
@@ -41,7 +41,7 @@ HitData Weapon::attack(Character& user, Character* target) {
 
 void Armour::inspect() {
     std::string title = get_display_name();
-    std::cout << title;
+    std::cout << title << '\n';
     std::cout << util::repeat("-", title.length()) << '\n';
     std::cout << std::format("DEF {:>3}", defence);
     std::cout << util::repeat("-", title.length()) << '\n';

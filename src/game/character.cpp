@@ -160,7 +160,7 @@ std::unique_ptr<Item> Character::get_item(std::string_view name) {
 }
 
 std::unique_ptr<Item> Character::choose_item() {
-    std::vector<Item*> items = inventory.get_all_unique();
+    std::vector<Item*> items = inventory.get_all();
 
     util::display_vector(items);
     int choice = util::prompt("Which item do you want to choose", 1, static_cast<int>(items.size()));
@@ -168,8 +168,12 @@ std::unique_ptr<Item> Character::choose_item() {
     return inventory.get_by_ptr(items[choice-1]);
 }
 
-void Character::give_item(std::unique_ptr<Item>& item) {
-    inventory.add_item(item);
+void Character::give_item(std::unique_ptr<Item> item) {
+    if (player_controlled) {
+        std::cout << std::format("You recieved {}\n", item->get_display_name());
+    }
+
+    inventory.add_item(std::move(item));
 }
 
 void Character::use_item(std::unique_ptr<Item>& item) {

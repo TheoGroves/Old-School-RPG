@@ -6,7 +6,7 @@
 
 class Inventory {
 public:
-    void add_item(std::unique_ptr<Item>& item);
+    void add_item(std::unique_ptr<Item> item);
     bool remove_item(Item* item_ptr);
     std::unique_ptr<Item> pop_item(Item* item_ptr);
 

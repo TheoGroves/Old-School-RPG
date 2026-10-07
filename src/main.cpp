@@ -22,19 +22,20 @@ int main() {
     table.add_item([&]() { return idb.wood_axe(); }, 0.5f);
     table.add_item([&]() { return idb.wood_warhammer(); }, 0.5f);
 
-    std::unique_ptr<Item> item1 = table.roll();
-    std::unique_ptr<Item> item2 = table.roll();
-    std::unique_ptr<Item> item3 = table.roll();
-
     //std::cout << "Enter character name: ";
     //std::cin >> name;
 
     Character player(rand, name, true);
     player.generate_character();
     //player.give_xp(500);
-    player.give_item(item1);
-    player.give_item(item2);
-    player.give_item(item3);
+    player.give_item(table.roll());
+    player.give_item(table.roll());
+    player.give_item(table.roll());
+    player.give_item(table.roll());
+
+    auto item = player.choose_item();
+    player.use_item(item);
+
     player.print();
 
     return 0;
