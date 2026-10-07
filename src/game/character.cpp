@@ -177,7 +177,7 @@ void Character::give_item(std::unique_ptr<Item> item) {
 }
 
 void Character::use_item(std::unique_ptr<Item>& item) {
-    std::string prompt = std::format("What will you do with the {}> ", item->name);
+    std::string prompt = std::format("What will you do with the {} ", item->name);
 
     if (auto* weapon = util::as<Weapon>(item)) {
         if (player_controlled) {
@@ -194,10 +194,20 @@ void Character::use_item(std::unique_ptr<Item>& item) {
             else if (choice == 3) {
                 std::vector<std::string> targets = {"Noone"};
                 util::display_vector(targets);
-                int choice = util::prompt("Attack who", 1, static_cast<int>(choices.size()));
+                int choice = util::prompt("Attack who", 1, static_cast<int>(targets.size()));
 
                 // Hard code attack at nobody. TODO: find nearby Characters.
-                weapon->attack(*this, nullptr);
+                HitData data = weapon->attack(*this, nullptr);
+
+                if (!data.target) {
+                    std::cout << "You swung at the air.\n";
+                }
+                else if (!data.hit) {
+                    std::cout << std::format("You missed {}.\n", data.target->name);
+                }
+                else {
+                    std::cout << std::format("{}You hit {}, dealing {} damage.\n", data.crit ? "Critical Hit! " : "", data.target->name, data.damage);
+                }
             }
         }
     }

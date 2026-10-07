@@ -2,6 +2,7 @@
 #include "game/character.h"
 #include "game/item_database.h"
 #include "game/loot_table.h"
+#include "util/util.h"
 #include <string>
 #include <iostream>
 #include <chrono>
@@ -33,10 +34,23 @@ int main() {
     player.give_item(table.roll());
     player.give_item(table.roll());
 
-    auto item = player.choose_item();
-    player.use_item(item);
+    std::vector<std::string> choices = {"Use Item", "Inspect Self", "Exit"};
 
-    player.print();
+    while (true) {
+        util::display_vector(choices);
+        int choice = util::prompt("What do you want to do", 1, static_cast<int>(choices.size()));
+
+        if (choice == 1) {
+            auto item = player.choose_item();
+            player.use_item(item);
+        }
+        else if (choice == 2) {
+            player.print();
+        }
+        else if (choice == 3) {
+            break;
+        }
+    }
 
     return 0;
 }
