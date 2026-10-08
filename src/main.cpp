@@ -36,31 +36,44 @@ int main() {
 
     Character player(rand, name, true);
     player.generate_character();
+    player.set_location(test_town.get());
     //player.give_xp(500);
     player.give_item(table.roll());
     player.give_item(table.roll());
     player.give_item(table.roll());
     player.give_item(table.roll());
 
+    Character npc(rand, "Test Character", false);
+    npc.generate_character();
+    npc.set_location(test_town.get());
+
     test_town->display_connections();
 
-    std::vector<std::string> choices = {"Use Item", "Inspect Self", "Open Equipment", "Exit"};
+    std::vector<std::string> choices = {"Use Item in Hands", "Open Inventory", "Inspect Self", "Open Equipment", "Exit"};
 
     while (true) {
         util::display_vector(choices);
         int choice = util::prompt("What do you want to do", 1, static_cast<int>(choices.size()));
 
         if (choice == 1) {
+            if (!player.equipment.hands)
+                util::print("You aren't holding anything.\n");
+                continue;
+
+            std::unique_ptr<Item> item = std::move(player.equipment.hands);
+            player.use_item(item, true);
+        }
+        else if (choice == 2) {
             auto item = player.choose_item();
             player.use_item(item);
         }
-        else if (choice == 2) {
+        else if (choice == 3) {
             player.print();
         }
-        else if (choice == 3) {
+        else if (choice == 4) {
             player.open_equipment();
         }
-        else if (choice == 4) {
+        else if (choice == 5) {
             break;
         }
     }

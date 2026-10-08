@@ -1,3 +1,5 @@
+#pragma once
+
 #include "item.h"
 #include "maths/maths.h"
 #include <vector>

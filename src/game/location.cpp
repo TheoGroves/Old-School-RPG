@@ -2,6 +2,7 @@
 #include "util/util.h"
 #include <iostream>
 #include <format>
+#include <algorithm>
 
 std::string Location::get_display_name() const {
     return name;
@@ -28,4 +29,12 @@ void Location::display_connections() {
 void Location::connect(std::shared_ptr<Location> location, float distance) {
     connections.push_back({location, distance});
     location->connections.push_back({shared_from_this(), distance});
+}
+
+void Location::add_character(Character* character) {
+    characters.push_back(character);
+}
+
+void Location::remove_character(Character* character) {
+    std::erase(characters, character);
 }

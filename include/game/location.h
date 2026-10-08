@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <string>
 #include <memory>
@@ -16,9 +18,13 @@ public:
 
     std::string get_display_name() const;
 
+    void add_character(Character* character);
+    void remove_character(Character* character);
+
 private:
     std::string name;
     std::vector<Connection> connections;
+    std::vector<Character*> characters;
 };
 
 struct Connection {

@@ -2,6 +2,7 @@
 #include "maths/maths.h"
 #include "game/inventory.h"
 #include "game/equipment.h"
+#include "game/location.h"
 #include <string>
 #include <string_view>
 
@@ -58,6 +59,8 @@ constexpr std::string_view to_string(Archetype archetype) {
     return "Unknown";
 }
 
+class Location;
+
 class Character {
 public:
     Character(maths::Random& rand, std::string name, bool player_controlled=false)
@@ -91,6 +94,8 @@ public:
     void handle_level_up(int level);
     void apply_upgrade(std::string stat);
 
+    void set_location(Location* new_location);
+
     int max_health() const;
     int base_damage() const;
     int defence() const;
@@ -105,9 +110,11 @@ public:
     void open_equipment();
 
     void give_item(std::unique_ptr<Item> item);
-    void use_item(std::unique_ptr<Item>& item);
+    void use_item(std::unique_ptr<Item>& item, bool using_equipment=false);
 
     ArchetypeResult archetype() const;
 private:
     maths::Random& rand;
+
+    Location* current_location = nullptr;
 };

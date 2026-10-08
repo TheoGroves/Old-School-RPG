@@ -124,6 +124,20 @@ void Character::apply_upgrade(std::string stat) {
     }
 }
 
+void Character::set_location(Location* new_location) {
+    if (!new_location)
+        throw std::runtime_error("Error: Cannot set a character's location to be nullptr.");
+
+    if (current_location == new_location)
+        return;
+
+    if (current_location)
+        current_location->remove_character(this);
+
+    current_location = new_location;
+    new_location->add_character(this);
+}
+
 int Character::max_health() const {
     return static_cast<int>(50 + 8 * stats.vitality + 12 * std::pow(level(), 1.15));
 }
@@ -219,12 +233,17 @@ void Character::give_item(std::unique_ptr<Item> item) {
     inventory.add_item(std::move(item));
 }
 
-void Character::use_item(std::unique_ptr<Item>& item) {
+void Character::use_item(std::unique_ptr<Item>& item, bool using_equipment) {
     std::string prompt = std::format("What will you do with the {} ", item->name);
 
     if (auto* weapon = util::as<Weapon>(item)) {
         if (player_controlled) {
-            std::vector<std::string> choices = {"Inspect", "Equip", "Attack", "Discard"};
+            std::vector<std::string> choices = {"Inspect", "Attack", "Discard"};
+
+            // When using equipment we skip the equip option
+            if (!using_equipment) 
+                choices.push_back("Equip");
+
             util::display_vector(choices);
             int choice = util::prompt(prompt, 1, static_cast<int>(choices.size()));
             
@@ -233,10 +252,6 @@ void Character::use_item(std::unique_ptr<Item>& item) {
                 inventory.add_item(std::move(item));
             } 
             else if (choice == 2) {
-                equipment.equip(ItemSlot::hands, item);
-                util::print(std::format("You held the {} in your hands.\n", item->name));
-            }
-            else if (choice == 3) {
                 std::vector<std::string> targets = {"Noone"};
                 util::display_vector(targets);
                 int choice = util::prompt("Attack who", 1, static_cast<int>(targets.size()));
@@ -256,7 +271,7 @@ void Character::use_item(std::unique_ptr<Item>& item) {
 
                 inventory.add_item(std::move(item));
             }
-            else if (choice == 4) {
+            else if (choice == 3) {
                 std::vector<std::string> confirmation = {"Yes", "No"};
                 util::display_vector(confirmation);
                 int confirm_discard = util::prompt(std::format("Are you sure you want to discard the {}?", item->get_display_name()), 1, 2);
@@ -270,6 +285,14 @@ void Character::use_item(std::unique_ptr<Item>& item) {
                 }
 
             }
+            else if (choice == 4) {
+                util::print(std::format("You held the {} in your hands.\n", item->name));
+                equipment.equip(ItemSlot::hands, item);
+            }
+
+            if (using_equipment && weapon) {
+                equipment.equip(ItemSlot::hands, item);
+            }
         }
     }
     else if (auto* armour = util::as<Armour>(item)) {
@@ -282,8 +305,12 @@ void Character::use_item(std::unique_ptr<Item>& item) {
                 armour->inspect();
             } 
             else if (choice == 2) {
-                equipment.equip(static_cast<ItemSlot>(armour->slot), item);
                 util::print(std::format("You equipped the {}.\n", item->name));
+                equipment.equip(static_cast<ItemSlot>(armour->slot), item);
+            }
+
+            if (using_equipment && armour) {
+                equipment.equip(static_cast<ItemSlot>(armour->slot), item);
             }
         }
     } else {
