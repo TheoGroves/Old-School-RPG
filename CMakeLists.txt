@@ -16,6 +16,7 @@ add_library(engine
     src/game/equipment.cpp
     src/game/item_database.cpp
     src/game/loot_table.cpp
+    src/game/location.cpp
 )
 
 # Create an executable called PROGRAM_NAME from Main.cpp

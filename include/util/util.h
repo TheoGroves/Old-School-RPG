@@ -8,9 +8,20 @@
 #include <limits>
 #include <string_view>
 #include <sstream>
+#include <thread>
+#include <chrono>
 
 namespace util {
     constexpr int separator_size = 50;
+
+    inline void print(std::string_view s) {
+        int delay = 10;
+
+        for (char c : s) {
+            std::cout << c << std::flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        }
+    }
 
     inline std::string repeat(const std::string& s, int n) {
         if (n <= 0) return "";
@@ -46,7 +57,7 @@ namespace util {
     inline T prompt(std::string_view prompt) {
         T choice;
         while (true) {
-            std::cout << std::format("{}\n> ", prompt);
+            print(std::format("{}\n> ", prompt));
 
             std::string line;
             std::getline(std::cin, line);
@@ -63,7 +74,7 @@ namespace util {
     inline T prompt(std::string_view prompt, T min, T max) {
         T choice;
         while (true) {
-            std::cout << std::format("{} ({}-{})\n> ", prompt, min, max);
+            print(std::format("{} ({}-{})\n> ", prompt, min, max));
 
             std::string line;
             std::getline(std::cin, line);
@@ -84,7 +95,7 @@ namespace util {
     template <typename T>
     inline void display_vector(const std::vector<T>& v) {
         for (size_t i = 0; i < v.size(); ++i) {
-            std::cout << std::format("{}. {}\n", i+1, v[i]);
+            print(std::format("{}. {}\n", i+1, v[i]));
         }
     }
 
@@ -95,15 +106,15 @@ namespace util {
         for (size_t i = 0; i < v.size(); ++i) {
             if (v[i]) {
                 if constexpr (requires { v[i]->get_display_name(); }) {
-                    std::cout << std::format("{}. {}\n", i+1, v[i]->get_display_name());
+                    print(std::format("{}. {}\n", i+1, v[i]->get_display_name()));
                 }
                 else if constexpr (requires { std::format("{}", *v[i]); }) {
-                    std::cout << std::format("{}. {}", i+1, *v[i]);
+                    print(std::format("{}. {}", i+1, *v[i]));
                 } else {
-                    std::cout << std::format("{}. [Unformattable Ptr]\n", i+1);
+                    print(std::format("{}. [Unformattable Ptr]\n", i+1));
                 }
             } else {
-                std::cout << std::format("{}. [Null]\n", i+1);
+                print(std::format("{}. [Null]\n", i+1));
             }
         }
     }

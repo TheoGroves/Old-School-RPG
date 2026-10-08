@@ -30,10 +30,11 @@ enum class ItemSlot {
 class Equipment {
 public:
     void equip(ItemSlot slot, std::unique_ptr<Item>& item);
+    std::unique_ptr<Item> unequip(ItemSlot slot);
     void print() const;
 
     int defence() const;
-private:
+
     std::unique_ptr<Armour> head = nullptr;
     std::unique_ptr<Armour> body = nullptr;
     std::unique_ptr<Armour> legs = nullptr;

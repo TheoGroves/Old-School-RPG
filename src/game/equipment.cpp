@@ -31,8 +31,31 @@ void Equipment::equip(ItemSlot slot, std::unique_ptr<Item>& item) {
     }
 }
 
+std::unique_ptr<Item> Equipment::unequip(ItemSlot slot) {
+    switch (slot) {
+        case ItemSlot::head:
+            return std::move(head);
+
+        case ItemSlot::body:
+            return std::move(body);
+
+        case ItemSlot::legs:
+            return std::move(legs);
+
+        case ItemSlot::feet:
+            return std::move(feet);
+
+        case ItemSlot::hands:
+            return std::move(hands);
+
+        default:
+            throw std::runtime_error("Unhandled Item Slot selected.");
+    }
+}
+
+
 void Equipment::print() const {
-    std::cout << util::header("Equipped", util::separator_size) << '\n';
+    util::print(util::header("Equipped", util::separator_size) + '\n');
 
     const auto print_slot = [](std::string_view slot, auto& item) {
         if (item) {
@@ -49,7 +72,7 @@ void Equipment::print() const {
             }
 
         } else {
-            std::cout << std::format("{:<5} None  DEF 0\n", slot);
+            util::print(std::format("{:<5} None  DEF 0\n", slot));
         }
     };
 

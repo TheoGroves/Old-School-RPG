@@ -9,6 +9,7 @@
 #include <vector>
 #include <limits>
 #include <string_view>
+#include <memory>
 
 static int generate_stat(maths::Random& rand, float mean = 10.0f, float standard_deviation = 2.5f, int min = 1, int max = 20) {
     return std::clamp(static_cast<int>(std::round(rand.normal(mean, standard_deviation))), min, max);
@@ -30,32 +31,32 @@ void Character::generate_character() {
 }
 
 void Character::print() const {
-    std::cout << util::separator(util::separator_size) << '\n';
-    std::cout << std::format("{} - Lvl.{} ({} xp)\n", name, level(), xp);
-    std::cout << util::separator(util::separator_size) << '\n';
+    util::print(util::separator(util::separator_size) + '\n');
+    util::print(std::format("{} - Lvl.{} ({} xp)\n", name, level(), xp));
+    util::print(util::separator(util::separator_size) + '\n');
     auto archetype_result = archetype();
-    std::cout << std::format("Archetype: {}\n", to_string(archetype_result.archetype));
-    std::cout << std::format("Affinity:  {:.1f}%\n", archetype_result.affinity * 50.0f);
-    std::cout << util::separator(util::separator_size) << '\n';
-    std::cout << std::format("STR {:>2}  DEX {:>2}  VIT {:>2}\n", stats.strength, stats.dexterity, stats.vitality);
-    std::cout << std::format("INT {:>2}  WIS {:>2}  LCK {:>2}\n", stats.intelligence, stats.wisdom, stats.luck);
-    std::cout << util::separator(util::separator_size) << "\n\n";
+    util::print(std::format("Archetype: {}\n", to_string(archetype_result.archetype)));
+    util::print(std::format("Affinity:  {:.1f}%\n", archetype_result.affinity * 50.0f));
+    util::print(util::separator(util::separator_size) + '\n');
+    util::print(std::format("STR {:>2}  DEX {:>2}  VIT {:>2}\n", stats.strength, stats.dexterity, stats.vitality));
+    util::print(std::format("INT {:>2}  WIS {:>2}  LCK {:>2}\n", stats.intelligence, stats.wisdom, stats.luck));
+    util::print(util::separator(util::separator_size) + "\n\n");
 
-    std::cout << util::header("Inventory", util::separator_size) << '\n';
+    util::print(util::header("Inventory", util::separator_size) + '\n');
     std::vector<Item*> all_items = inventory.get_all();
 
     for (size_t i = 0; i < all_items.size(); ++i) {
-        std::cout << std::format("{:>2}. {} [{}]\n", i+1, all_items[i]->name, all_items[i]->quality);
+        util::print(std::format("{:>2}. {} [{}]\n", i+1, all_items[i]->name, all_items[i]->quality));
     }
     if (all_items.empty()) {
-        std::cout << "Empty\n";
+        util::print("Empty\n");
     }
 
-    std::cout << util::separator(util::separator_size) << "\n\n";
+    util::print(util::separator(util::separator_size) + "\n\n");
 
     equipment.print();
 
-    std::cout << util::separator(util::separator_size) << "\n\n";
+    util::print(util::separator(util::separator_size) + "\n\n");
 }
 
 void Character::deal_damage(float damage) {
@@ -85,9 +86,9 @@ void Character::handle_level_up(int level) {
 
     // If player controls this character allow the player to choose which stat to improve
     if (player_controlled) {
-        std::cout << util::header("Level Up", util::separator_size) << '\n';
-        std::cout << std::format("You have now reached Level {}\n\n", level);
-        std::cout << "You have the option of increasing one of:\n";
+        util::print(util::header("Level Up", util::separator_size) + '\n');
+        util::print(std::format("You have now reached Level {}\n\n", level));
+        util::print("You have the option of increasing one of:\n");
         util::display_vector(choices);
         int choice = util::prompt("Please choose a stat to upgrade", 1, 3);
         chosen_stat = choices[choice - 1];
@@ -168,9 +169,51 @@ std::unique_ptr<Item> Character::choose_item() {
     return inventory.get_by_ptr(items[choice-1]);
 }
 
+static ItemSlot prompt_for_slot() {
+    std::vector<std::string> choices = {"Head", "Body", "Legs", "Feet", "Hands"};
+    util::display_vector(choices);
+    
+    int choice = util::prompt("Which slot would you like to manage", 1, static_cast<int>(choices.size()));
+
+    switch (choice) {
+        case 1: return ItemSlot::head;
+        case 2: return ItemSlot::body;
+        case 3: return ItemSlot::legs;
+        case 4: return ItemSlot::feet;
+        case 5: return ItemSlot::hands;
+        default: throw std::runtime_error("Unhandled Item Slot selected.");
+    }
+}
+
+void Character::open_equipment() {
+    if (player_controlled) {
+        equipment.print();
+        
+        ItemSlot slot = prompt_for_slot();
+
+        std::vector<std::string> equipment_choices = {"Unequip", "Inspect"};
+        util::display_vector(equipment_choices);
+        int choice = util::prompt("What would you like to do with it", 1, static_cast<int>(equipment_choices.size()));
+
+        if (choice == 1) {
+            equipment.unequip(slot);
+        } 
+        else if (choice == 2) {
+            switch (slot) {
+                case ItemSlot::head:  if (equipment.head)  equipment.head->inspect();  break;
+                case ItemSlot::body:  if (equipment.body)  equipment.body->inspect();  break;
+                case ItemSlot::legs:  if (equipment.legs)  equipment.legs->inspect();  break;
+                case ItemSlot::feet:  if (equipment.feet)  equipment.feet->inspect();  break;
+                case ItemSlot::hands: if (equipment.hands) equipment.hands->inspect(); break;
+                default: throw std::runtime_error("Unhandled item slot.");
+            }
+        }
+    }
+}
+
 void Character::give_item(std::unique_ptr<Item> item) {
     if (player_controlled) {
-        std::cout << std::format("You recieved {}\n", item->get_display_name());
+        util::print(std::format("You recieved {}\n", item->get_display_name()));
     }
 
     inventory.add_item(std::move(item));
@@ -181,15 +224,17 @@ void Character::use_item(std::unique_ptr<Item>& item) {
 
     if (auto* weapon = util::as<Weapon>(item)) {
         if (player_controlled) {
-            std::vector<std::string> choices = {"Inspect", "Equip", "Attack"};
+            std::vector<std::string> choices = {"Inspect", "Equip", "Attack", "Discard"};
             util::display_vector(choices);
             int choice = util::prompt(prompt, 1, static_cast<int>(choices.size()));
             
             if (choice == 1) {
                 weapon->inspect();
+                inventory.add_item(std::move(item));
             } 
             else if (choice == 2) {
                 equipment.equip(ItemSlot::hands, item);
+                util::print(std::format("You held the {} in your hands.\n", item->name));
             }
             else if (choice == 3) {
                 std::vector<std::string> targets = {"Noone"};
@@ -200,14 +245,30 @@ void Character::use_item(std::unique_ptr<Item>& item) {
                 HitData data = weapon->attack(*this, nullptr);
 
                 if (!data.target) {
-                    std::cout << "You swung at the air.\n";
+                    util::print("You swung at the air.\n");
                 }
                 else if (!data.hit) {
-                    std::cout << std::format("You missed {}.\n", data.target->name);
+                    util::print(std::format("You missed {}.\n", data.target->name));
                 }
                 else {
-                    std::cout << std::format("{}You hit {}, dealing {} damage.\n", data.crit ? "Critical Hit! " : "", data.target->name, data.damage);
+                    util::print(std::format("{}You hit {}, dealing {} damage.\n", data.crit ? "Critical Hit! " : "", data.target->name, data.damage));
                 }
+
+                inventory.add_item(std::move(item));
+            }
+            else if (choice == 4) {
+                std::vector<std::string> confirmation = {"Yes", "No"};
+                util::display_vector(confirmation);
+                int confirm_discard = util::prompt(std::format("Are you sure you want to discard the {}?", item->get_display_name()), 1, 2);
+                
+                if (confirm_discard == 1) {
+                    util::print(std::format("You discarded the {}.", item->get_display_name()) + '\n');
+                }
+                else if (confirm_discard == 2) {
+                    util::print(std::format("You did not discard the {}.", item->get_display_name()) + '\n'); 
+                    inventory.add_item(std::move(item));
+                }
+
             }
         }
     }
@@ -222,6 +283,7 @@ void Character::use_item(std::unique_ptr<Item>& item) {
             } 
             else if (choice == 2) {
                 equipment.equip(static_cast<ItemSlot>(armour->slot), item);
+                util::print(std::format("You equipped the {}.\n", item->name));
             }
         }
     } else {

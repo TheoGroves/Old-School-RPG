@@ -102,6 +102,7 @@ public:
 
     std::unique_ptr<Item> get_item(std::string_view name);
     std::unique_ptr<Item> choose_item();
+    void open_equipment();
 
     void give_item(std::unique_ptr<Item> item);
     void use_item(std::unique_ptr<Item>& item);

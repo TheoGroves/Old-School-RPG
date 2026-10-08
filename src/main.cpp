@@ -2,6 +2,7 @@
 #include "game/character.h"
 #include "game/item_database.h"
 #include "game/loot_table.h"
+#include "game/location.h"
 #include "util/util.h"
 #include <string>
 #include <iostream>
@@ -23,7 +24,14 @@ int main() {
     table.add_item([&]() { return idb.wood_axe(); }, 0.5f);
     table.add_item([&]() { return idb.wood_warhammer(); }, 0.5f);
 
-    //std::cout << "Enter character name: ";
+    std::shared_ptr<Location> test_town = std::make_shared<Location>(Location("Test Town"));
+    std::shared_ptr<Location> west_town = std::make_shared<Location>(Location("West Town"));
+    std::shared_ptr<Location> east_town = std::make_shared<Location>(Location("East Town"));
+
+    test_town->connect(west_town, 5.0);
+    test_town->connect(east_town, 10.0);
+
+    //util::print("Enter character name: ");
     //std::cin >> name;
 
     Character player(rand, name, true);
@@ -34,7 +42,9 @@ int main() {
     player.give_item(table.roll());
     player.give_item(table.roll());
 
-    std::vector<std::string> choices = {"Use Item", "Inspect Self", "Exit"};
+    test_town->display_connections();
+
+    std::vector<std::string> choices = {"Use Item", "Inspect Self", "Open Equipment", "Exit"};
 
     while (true) {
         util::display_vector(choices);
@@ -48,6 +58,9 @@ int main() {
             player.print();
         }
         else if (choice == 3) {
+            player.open_equipment();
+        }
+        else if (choice == 4) {
             break;
         }
     }
