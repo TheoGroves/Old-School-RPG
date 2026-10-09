@@ -21,6 +21,8 @@ public:
     void add_character(Character* character);
     void remove_character(Character* character);
 
+    std::vector<Character*> get_all();
+
 private:
     std::string name;
     std::vector<Connection> connections;

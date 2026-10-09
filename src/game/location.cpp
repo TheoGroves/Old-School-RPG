@@ -38,3 +38,7 @@ void Location::add_character(Character* character) {
 void Location::remove_character(Character* character) {
     std::erase(characters, character);
 }
+
+std::vector<Character*> Location::get_all() {
+    return characters;
+}

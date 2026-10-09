@@ -234,7 +234,7 @@ void Character::give_item(std::unique_ptr<Item> item) {
 }
 
 void Character::use_item(std::unique_ptr<Item>& item, bool using_equipment) {
-    std::string prompt = std::format("What will you do with the {} ", item->name);
+    std::string prompt = std::format("What will you do with the {}", item->name);
 
     if (auto* weapon = util::as<Weapon>(item)) {
         if (player_controlled) {
@@ -249,15 +249,25 @@ void Character::use_item(std::unique_ptr<Item>& item, bool using_equipment) {
             
             if (choice == 1) {
                 weapon->inspect();
-                inventory.add_item(std::move(item));
+                if (!using_equipment)
+                    inventory.add_item(std::move(item));
             } 
             else if (choice == 2) {
-                std::vector<std::string> targets = {"Noone"};
-                util::display_vector(targets);
-                int choice = util::prompt("Attack who", 1, static_cast<int>(targets.size()));
+                std::vector<Character*> targets = {nullptr};
+                std::vector<std::string> target_names = {"Noone"};
 
-                // Hard code attack at nobody. TODO: find nearby Characters.
-                HitData data = weapon->attack(*this, nullptr);
+                for (auto& character : current_location->get_all()) {
+                    // Don't allow attacking self
+                    if (character->name != this->name) {
+                        targets.push_back(character);
+                        target_names.push_back(character->name);
+                    }
+                }
+
+                util::display_vector(target_names);
+                int choice = util::prompt("Attack who?", 1, static_cast<int>(target_names.size()));
+
+                HitData data = weapon->attack(*this, targets[choice-1]);
 
                 if (!data.target) {
                     util::print("You swung at the air.\n");
@@ -266,10 +276,11 @@ void Character::use_item(std::unique_ptr<Item>& item, bool using_equipment) {
                     util::print(std::format("You missed {}.\n", data.target->name));
                 }
                 else {
-                    util::print(std::format("{}You hit {}, dealing {} damage.\n", data.crit ? "Critical Hit! " : "", data.target->name, data.damage));
+                    util::print(std::format("{}You hit {}, dealing {:.0f} damage.\n", data.crit ? "Critical Hit! " : "", data.target->name, data.damage));
                 }
 
-                inventory.add_item(std::move(item));
+                if (!using_equipment)
+                    inventory.add_item(std::move(item));
             }
             else if (choice == 3) {
                 std::vector<std::string> confirmation = {"Yes", "No"};
@@ -294,6 +305,7 @@ void Character::use_item(std::unique_ptr<Item>& item, bool using_equipment) {
                 equipment.equip(ItemSlot::hands, item);
             }
         }
+    
     }
     else if (auto* armour = util::as<Armour>(item)) {
         if (player_controlled) {

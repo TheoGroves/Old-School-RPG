@@ -56,9 +56,10 @@ int main() {
         int choice = util::prompt("What do you want to do", 1, static_cast<int>(choices.size()));
 
         if (choice == 1) {
-            if (!player.equipment.hands)
+            if (!player.equipment.hands) {
                 util::print("You aren't holding anything.\n");
                 continue;
+            }
 
             std::unique_ptr<Item> item = std::move(player.equipment.hands);
             player.use_item(item, true);
@@ -80,4 +81,3 @@ int main() {
 
     return 0;
 }
-
